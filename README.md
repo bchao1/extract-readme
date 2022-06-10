@@ -20,3 +20,6 @@ python3 extract_readme.py user repo
 - `repo`: repository name
 
 The formatted HTML file will be copied to your clipboard. Simply embed the copied content in your website HTML code. 
+
+## Todo
+- HTML in markdown
