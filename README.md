@@ -12,8 +12,16 @@ Sometimes you may want to mirror a README file of your project on your academic 
 This script takes care of these issues.
 
 ## Usage
+Install the package:
 ```
-python3 extract_readme.py user repo
+git clone https://github.com/bchao1/extract-readme.git
+cd extract-readme 
+python3 -m pip install .
+```
+
+Run the following command:
+```
+extract-readme user repo
 ```
 
 - `user`: the GitHub user handle
