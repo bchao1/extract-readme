@@ -13,14 +13,14 @@ This script takes care of these issues.
 
 ## Usage
 Install the package:
-```
+```cmd
 git clone https://github.com/bchao1/extract-readme.git
 cd extract-readme 
 python3 -m pip install .
 ```
 
 Run the following command:
-```
+```cmd
 extract-readme user repo
 ```
 
@@ -59,4 +59,3 @@ Note that this script only generates a bare-bones HTML. You can either customize
 
 ## Todo
 - README regex match
-- Change script to CLI 
