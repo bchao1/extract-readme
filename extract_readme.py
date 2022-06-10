@@ -7,6 +7,7 @@ from argparse import ArgumentParser
 
 user = None
 repo = None
+raw_data_root = "https://raw.githubusercontent.com"
 
 class MyRenderer(HTMLRenderer):
     def __init__(self, *args, **kwargs):
@@ -99,7 +100,6 @@ if __name__ == "__main__":
     parser.add_argument("repo")
     args = parser.parse_args()
 
-    raw_data_root = "https://raw.githubusercontent.com"
     user = args.user
     repo = args.repo
 
