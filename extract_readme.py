@@ -5,10 +5,22 @@ from mistletoe.html_renderer import HTMLRenderer
 import pyperclip
 from argparse import ArgumentParser
 import html
+from bs4 import BeautifulSoup
 
 user = None
 repo = None
 raw_data_root = "https://raw.githubusercontent.com"
+
+def process_html(token, user, repo, raw_data_root):
+    soup = BeautifulSoup(token.content, "html.parser")
+    img_tags = soup.find_all("img")
+    for i in range(len(img_tags)):
+        src = img_tags[i]["src"]
+        new_src = src.lstrip("./")
+        new_src = "/".join([raw_data_root, user, repo, "master", new_src])
+        img_tags[i]["src"] = new_src
+        img_tags[i]["width"] = "100%"
+    return soup.prettify()
 
 class MyRenderer(HTMLRenderer):
     def __init__(self, *args, **kwargs):
@@ -37,18 +49,13 @@ class MyRenderer(HTMLRenderer):
             #    print(token.children[i].__dict__)
         return ''.join(map(self.render, token.children))
 
+    @staticmethod
+    def render_html_span(token: span_token.HTMLSpan) -> str:
+        return process_html(token, user, repo, raw_data_root)
 
     @staticmethod
     def render_html_block(token: block_token.HTMLBlock) -> str:
-        soup = BeautifulSoup(token.content, "html.parser")
-        print(soup)
-        img_tags = soup.find_all("img")
-        for i in range(len(img_tags)):
-            src = img_tags[i]["src"]
-            new_src = src.lstrip("./")
-            new_src = "/".join([raw_data_root, user, repo, "master", new_src])
-            img_tags[i]["src"] = new_src
-        return soup
+        return process_html(token, user, repo, raw_data_root)
 
     def render_table_row(self, token: block_token.TableRow, is_header=False) -> str:
         template = '<tr>\n{inner}</tr>\n'
