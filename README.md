@@ -1,5 +1,5 @@
 # extract-readme
-Extract README markdown file from a GitHub repository and generate the formatted HTML that can be rendered on any website.
+`extract-readme` extracts the README markdown file from a GitHub repository and generates a corresponding formatted HTML that can be rendered on any website.
 
 ## What for?
 Sometimes you may want to mirror a README file of your project on your academic personal website. However, you might encounter serveral problems:
