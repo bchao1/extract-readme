@@ -95,8 +95,8 @@ class MyRenderer(HTMLRenderer):
 
 if __name__ == "__main__":
     parser = ArgumentParser()
-    parser.add_argument("--user", required=True)
-    parser.add_argument("--repo", required=True)
+    parser.add_argument("user")
+    parser.add_argument("repo")
     args = parser.parse_args()
 
     raw_data_root = "https://raw.githubusercontent.com"
