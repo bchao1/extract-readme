@@ -1,14 +1,26 @@
+import re
+import html
 import requests
+import pyperclip
+from github import Github
+from bs4 import BeautifulSoup
+from argparse import ArgumentParser
+
 import mistletoe
 from mistletoe import span_token, block_token, Document
 from mistletoe.html_renderer import HTMLRenderer
-import pyperclip
-from argparse import ArgumentParser
-import html
-from bs4 import BeautifulSoup
 
 raw_data_root = "https://raw.githubusercontent.com"
 
+def get_readme_content(user_name, repo_name):
+    g = Github()
+    repo = g.get_repo(f"{user_name}/{repo_name}")
+    contents = repo.get_contents("")
+    for content in contents:
+        if re.match("(?i)readme*", content.path) is not None:
+            readme_content = requests.get(content.download_url).text # readme raw content
+    return readme_content
+    
 def process_html(token, user, repo, raw_data_root):
     soup = BeautifulSoup(token.content, "html.parser")
     img_tags = soup.find_all("img")
@@ -122,8 +134,7 @@ def main():
     user = args.user
     repo = args.repo
 
-    readme_url = "/".join([raw_data_root, args.user, args.repo, "master", "README.md"]) # readme or README
-    readme_content = requests.get(readme_url).text # readme raw content
+    readme_content = get_readme_content(user, repo)
     with READMERenderer(user, repo) as renderer:
         markdown = renderer.render(Document(readme_content))
     pyperclip.copy(markdown)
