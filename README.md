@@ -1,5 +1,5 @@
 # extract-readme
-Extract README markdown file from GitHub repository and generate formatted HTML that can be rendered on any website.
+Extract README markdown file from a GitHub repository and generate the formatted HTML that can be rendered on any website.
 
 ## What for?
 Sometimes you may want to mirror a README file of your project on your academic personal website. However, you might encounter serveral problems:
@@ -19,4 +19,4 @@ python3 extract_readme.py user repo
 - `user`: the GitHub user handle
 - `repo`: repository name
 
-The formatted HTML file will be copied to your clipboard. Simply paste the copied content on your website HTML code.
+The formatted HTML file will be copied to your clipboard. Simply embed the copied content in your website HTML code. 
