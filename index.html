@@ -1,0 +1,299 @@
+<h1>Poisson image editing</h1>
+<p>A fast, scalable, and extensive implementation of the <a href="https://dl.acm.org/doi/10.1145/882262.882269">Poisson Image Editing</a> paper by Perez et al. 2003.</p>
+<p><p align="center"><img src="https://raw.githubusercontent.com/bchao1/poisson-image-editing/master/data/teaser.png" alt="teaser" width="80%"/></p></p>
+<h2>Features</h2>
+<ul>
+<li>Poisson image editing functionalities
+<ul>
+<li>Seamless cloning - importing gradients</li>
+<li>Seamless cloning - mixing gradients</li>
+<li>Seamless tiling</li>
+<li>Texture flattening</li>
+<li>Local illumination change</li>
+<li>Local color change</li>
+</ul>
+</li>
+<li>Supports all sparse linear system solvers in <code>scipy.sparse.linalg</code></li>
+<li>Acceleration of large input problems using multigrid approaches</li>
+<li>An Object-Oriented Programming approach for Poisson image editing - see branch <code>oop</code> for more details
+<ul>
+<li>All editing functions inherit the abstract <code>PoissonImageEditor</code> class</li>
+</ul>
+</li>
+</ul>
+<h2>Comparison with other implementations</h2>
+<p>There are many open source Python implementations of Poisson image editing. However, most implementations only focus on image <em>blending</em>, while ignoring other Poisson image editing applications listed in the paper. This implementation aims to faithfully reproduce all experiments and results presented in the paper. The following table shows the implemented functionalities:</p>
+<p><br></p><table style="width:100%;margin:auto">
+<thead>
+<tr>
+<th align="left" style="width:20.0%;"></th>
+<th align="left" style="width:20.0%;"><a href="https://github.com/rinsa318/poisson-image-editing">Src. 1</a></th>
+<th align="left" style="width:20.0%;"><a href="https://github.com/willemmanuel/poisson-image-editing">Src. 2</a></th>
+<th align="left" style="width:20.0%;"><a href="https://github.com/PPPW/poisson-image-editing">Src. 3</a></th>
+<th align="left" style="width:20.0%;">This</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" style="width:20.0%;">Seamless cloning</td>
+<td align="left" style="width:20.0%;">✅</td>
+<td align="left" style="width:20.0%;">✅</td>
+<td align="left" style="width:20.0%;">✅</td>
+<td align="left" style="width:20.0%;">✅</td>
+</tr>
+<tr>
+<td align="left" style="width:20.0%;">Seamless tiling</td>
+<td align="left" style="width:20.0%;">❌</td>
+<td align="left" style="width:20.0%;">❌</td>
+<td align="left" style="width:20.0%;">❌</td>
+<td align="left" style="width:20.0%;">✅</td>
+</tr>
+<tr>
+<td align="left" style="width:20.0%;">Texture flattening</td>
+<td align="left" style="width:20.0%;">✅</td>
+<td align="left" style="width:20.0%;">❌</td>
+<td align="left" style="width:20.0%;">❌</td>
+<td align="left" style="width:20.0%;">✅</td>
+</tr>
+<tr>
+<td align="left" style="width:20.0%;">Local illumination change</td>
+<td align="left" style="width:20.0%;">❌</td>
+<td align="left" style="width:20.0%;">❌</td>
+<td align="left" style="width:20.0%;">❌</td>
+<td align="left" style="width:20.0%;">✅</td>
+</tr>
+<tr>
+<td align="left" style="width:20.0%;">Local color change</td>
+<td align="left" style="width:20.0%;">❌</td>
+<td align="left" style="width:20.0%;">❌</td>
+<td align="left" style="width:20.0%;">❌</td>
+<td align="left" style="width:20.0%;">✅</td>
+</tr>
+</tbody>
+</table><p><br></p>
+<p>Furthermore, this implementation is signifacantly <em>faster</em> and scales much better than others. The following table shows the profiled run time of seamless cloning on different datasets (in seconds):</p>
+<p><br></p><table style="width:100%;margin:auto">
+<thead>
+<tr>
+<th align="left" style="width:20.0%;"></th>
+<th align="left" style="width:20.0%;"><a href="https://github.com/rinsa318/poisson-image-editing">Src. 1</a></th>
+<th align="left" style="width:20.0%;"><a href="https://github.com/willemmanuel/poisson-image-editing">Src. 2</a></th>
+<th align="left" style="width:20.0%;"><a href="https://github.com/PPPW/poisson-image-editing">Src. 3</a></th>
+<th align="left" style="width:20.0%;">This</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" style="width:20.0%;">test1</td>
+<td align="left" style="width:20.0%;">32.064</td>
+<td align="left" style="width:20.0%;">312.930</td>
+<td align="left" style="width:20.0%;">6.755</td>
+<td align="left" style="width:20.0%;"><strong>1.799</strong></td>
+</tr>
+<tr>
+<td align="left" style="width:20.0%;">test2</td>
+<td align="left" style="width:20.0%;">13.634</td>
+<td align="left" style="width:20.0%;">59.875</td>
+<td align="left" style="width:20.0%;">1.775</td>
+<td align="left" style="width:20.0%;"><strong>1.389</strong></td>
+</tr>
+<tr>
+<td align="left" style="width:20.0%;">test3</td>
+<td align="left" style="width:20.0%;">36.575</td>
+<td align="left" style="width:20.0%;">565.466</td>
+<td align="left" style="width:20.0%;">3.401</td>
+<td align="left" style="width:20.0%;"><strong>1.818</strong></td>
+</tr>
+<tr>
+<td align="left" style="width:20.0%;">test4</td>
+<td align="left" style="width:20.0%;">19.866</td>
+<td align="left" style="width:20.0%;">42.592</td>
+<td align="left" style="width:20.0%;">1.542</td>
+<td align="left" style="width:20.0%;"><strong>1.419</strong></td>
+</tr>
+</tbody>
+</table><p><br></p>
+<p>The following figure shows the scaling performance of this implementation compared to that of Src. 3. For fair comparison, both implementations are modified to use the same solver <code>scipy.sparse.linalg.spsolve</code>.
+<p align="center"><img src="https://raw.githubusercontent.com/bchao1/poisson-image-editing/master/data/scale_profiling.png" alt="scaling perf" width="80%"/></p></p>
+<p>By using multigrid solvers, editing a 1080p image can be done in less than 30 seconds, a <strong>6.7x</strong> speedup compared to the current fastest open source Python implementation:</p>
+<p><br></p><table style="width:100%;margin:auto">
+<thead>
+<tr>
+<th align="left" style="width:33.333333333333336%;"></th>
+<th align="left" style="width:33.333333333333336%;"><a href="https://github.com/PPPW/poisson-image-editing">Src. 3</a></th>
+<th align="left" style="width:33.333333333333336%;">This (multigrid approach)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" style="width:33.333333333333336%;">1080p image</td>
+<td align="left" style="width:33.333333333333336%;">134.896</td>
+<td align="left" style="width:33.333333333333336%;">20.814</td>
+</tr>
+</tbody>
+</table><p><br></p>
+<h2>Usage</h2>
+<p>To run all experiments using the given datasets (contains testing images in the paper and this README file), run</p>
+<pre><code>./run_experiments.sh
+</code></pre>
+<h3>Seamless cloning</h3>
+<p>To test on your own dataset, run</p>
+<pre><code>python3 seamless_cloning.py --help
+</code></pre>
+<ul>
+<li><code>data_dir</code>: Folder that contains the input image files. The folder should contain image files named <code>mask</code>, <code>target</code>, and <code>source</code>. The file extension of the files can be arbitrary, as long as the files are valid image files.</li>
+<li><code>grayscale</code>: Whether to perform blending on the grayscale images.</li>
+<li><code>solver</code>: Linear solver to use when solving the poisson blending problem. The value of <code>solver</code> should either be function names in the <code>scipy.sparse.linalg</code> library, or <code>&quot;multigrid&quot;</code>. Default is <code>spsolve</code>.</li>
+<li><code>gradient_mixing_mode</code>: Method to mix source and target image gradients. <code>max</code> implements <em>3. Seamless cloning - Mixing gradients</em> section in the paper, while <code>alpha</code> + <code>gradient_mixing_alpha == 1.0</code> implements <em>3. Seamless cloning - Importing gradients</em> section.</li>
+<li><code>gradient_mixing_alpha</code>: Alpha to blend source and target image gradients. Has an effect only when <code>gradient_mixing_mode == &quot;alpha&quot;</code>.</li>
+</ul>
+<h3>Seamless tiling</h3>
+<p>To test on your own dataset, run</p>
+<pre><code>python3 seamless_tiling.py --help
+</code></pre>
+<h3>Texture flattening</h3>
+<p>To test on your own dataset, run</p>
+<pre><code>python3 texture_flattening.py --help
+</code></pre>
+<ul>
+<li><code>use_edge</code>: Use <code>edge.*</code> edge map image file in the folder specified in the <code>data_dir</code> folder. If this flag is not set, then computes the edge map from provided source image using Canny edge detector and binary dilation.</li>
+<li><code>canny_threshold</code>: Thresholding parameters for Canny edge detector. You can play with this parameter for different flattening results. See the <a href="https://docs.opencv.org/4.x/da/d22/tutorial_py_canny.html">documentation</a> for more information.</li>
+<li><code>edge_dilation_kernel</code>: Kernel size to dilate detected edges. The kernel is a square box filter filled with ones.</li>
+</ul>
+<h3>Local illumination change</h3>
+<p>To test on your own dataset, run</p>
+<pre><code>python3 local_illumination_change.py --help
+</code></pre>
+<ul>
+<li><code>data_dir</code>: Folder that contains the input image files. The folder should contain image files named <code>mask</code> and <code>source</code>. The file extension of the files can be arbitrary, as long as the files are valid image files. The illumination of the regions specified by the mask will be modified.</li>
+</ul>
+<h3>Local color change</h3>
+<p>To test on your own dataset, run</p>
+<pre><code>python3 local_color_change.py --help
+</code></pre>
+<ul>
+<li><code>mode</code>: Color change mode. If <code>mode == &quot;gray_background&quot;</code>, then pixels outside the masked region will be converted to grayscale. If <code>mode == &quot;color_change&quot;</code>, the hue of the masked region is increased by the value specified by <code>change_hue</code> parameter.</li>
+<li><code>change_hue</code>: Value added to the hue channel of the masked region.</li>
+</ul>
+<h2>Results</h2>
+<h3>Seamless cloning</h3>
+<p><br></p><table style="width:100%;margin:auto">
+<thead>
+<tr>
+<th align="left" style="width:25.0%;">Source</th>
+<th align="left" style="width:25.0%;">Target</th>
+<th align="left" style="width:25.0%;">Mask</th>
+<th align="left" style="width:25.0%;">Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" style="width:25.0%;"><p align="center"><img src="https://raw.githubusercontent.com/bchao1/poisson-image-editing/master/data/test1/source.png" alt="src" width="100%"/></p></td>
+<td align="left" style="width:25.0%;"><p align="center"><img src="https://raw.githubusercontent.com/bchao1/poisson-image-editing/master/data/test1/target.png" alt="src" width="100%"/></p></td>
+<td align="left" style="width:25.0%;"><p align="center"><img src="https://raw.githubusercontent.com/bchao1/poisson-image-editing/master/data/test1/mask.png" alt="src" width="100%"/></p></td>
+<td align="left" style="width:25.0%;"><p align="center"><img src="https://raw.githubusercontent.com/bchao1/poisson-image-editing/master/data/test1/result.png" alt="src" width="100%"/></p></td>
+</tr>
+<tr>
+<td align="left" style="width:25.0%;"><p align="center"><img src="https://raw.githubusercontent.com/bchao1/poisson-image-editing/master/data/test2/source.jpg" alt="src" width="100%"/></p></td>
+<td align="left" style="width:25.0%;"><p align="center"><img src="https://raw.githubusercontent.com/bchao1/poisson-image-editing/master/data/test2/target.jpg" alt="src" width="100%"/></p></td>
+<td align="left" style="width:25.0%;"><p align="center"><img src="https://raw.githubusercontent.com/bchao1/poisson-image-editing/master/data/test2/mask.jpg" alt="src" width="100%"/></p></td>
+<td align="left" style="width:25.0%;"><p align="center"><img src="https://raw.githubusercontent.com/bchao1/poisson-image-editing/master/data/test2/result.png" alt="src" width="100%"/></p></td>
+</tr>
+<tr>
+<td align="left" style="width:25.0%;"><p align="center"><img src="https://raw.githubusercontent.com/bchao1/poisson-image-editing/master/data/test3/source.png" alt="src" width="100%"/></p></td>
+<td align="left" style="width:25.0%;"><p align="center"><img src="https://raw.githubusercontent.com/bchao1/poisson-image-editing/master/data/test3/target.png" alt="src" width="100%"/></p></td>
+<td align="left" style="width:25.0%;"><p align="center"><img src="https://raw.githubusercontent.com/bchao1/poisson-image-editing/master/data/test3/mask.png" alt="src" width="100%"/></p></td>
+<td align="left" style="width:25.0%;"><p align="center"><img src="https://raw.githubusercontent.com/bchao1/poisson-image-editing/master/data/test3/result.png" alt="src" width="100%"/></p></td>
+</tr>
+<tr>
+<td align="left" style="width:25.0%;"><img src="data/test4/source.png" width="200"/></td>
+<td align="left" style="width:25.0%;"><img src="data/test4/target.png" width="200"/></td>
+<td align="left" style="width:25.0%;"><img src="data/test4/mask.png" width="200"/></td>
+<td align="left" style="width:25.0%;"><img src="data/test4/result.png" width="200"/></td>
+</tr>
+</tbody>
+</table><p><br></p>
+<h3>Seamless tiling</h3>
+<p><br></p><table style="width:100%;margin:auto">
+<thead>
+<tr>
+<th align="left" style="width:33.333333333333336%;">Texture</th>
+<th align="left" style="width:33.333333333333336%;">Naive tile</th>
+<th align="left" style="width:33.333333333333336%;">Seamless tile</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" style="width:33.333333333333336%;"><p align="center"><img src="https://raw.githubusercontent.com/bchao1/poisson-image-editing/master/data/texture2/texture.jpg" alt="" width="100%"/></p></td>
+<td align="left" style="width:33.333333333333336%;"><p align="center"><img src="https://raw.githubusercontent.com/bchao1/poisson-image-editing/master/data/texture2/orig_tile.png" alt="" width="100%"/></p></td>
+<td align="left" style="width:33.333333333333336%;"><p align="center"><img src="https://raw.githubusercontent.com/bchao1/poisson-image-editing/master/data/texture2/new_tile.png" alt="" width="100%"/></p></td>
+</tr>
+<tr>
+<td align="left" style="width:33.333333333333336%;"><p align="center"><img src="https://raw.githubusercontent.com/bchao1/poisson-image-editing/master/data/texture3/texture.jpg" alt="" width="100%"/></p></td>
+<td align="left" style="width:33.333333333333336%;"><p align="center"><img src="https://raw.githubusercontent.com/bchao1/poisson-image-editing/master/data/texture3/orig_tile.png" alt="" width="100%"/></p></td>
+<td align="left" style="width:33.333333333333336%;"><p align="center"><img src="https://raw.githubusercontent.com/bchao1/poisson-image-editing/master/data/texture3/new_tile.png" alt="" width="100%"/></p></td>
+</tr>
+</tbody>
+</table><p><br></p>
+<h3>Texture flattening</h3>
+<p><br></p><table style="width:100%;margin:auto">
+<thead>
+<tr>
+<th align="left" style="width:25.0%;">Source</th>
+<th align="left" style="width:25.0%;">Mask</th>
+<th align="left" style="width:25.0%;">Edge</th>
+<th align="left" style="width:25.0%;">Flattened</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" style="width:25.0%;"><p align="center"><img src="https://raw.githubusercontent.com/bchao1/poisson-image-editing/master/data/test5/source.jpg" alt="" width="100%"/></p></td>
+<td align="left" style="width:25.0%;"><p align="center"><img src="https://raw.githubusercontent.com/bchao1/poisson-image-editing/master/data/test5/mask.png" alt="" width="100%"/></p></td>
+<td align="left" style="width:25.0%;"><p align="center"><img src="https://raw.githubusercontent.com/bchao1/poisson-image-editing/master/data/test5/edge_canny.png" alt="" width="100%"/></p></td>
+<td align="left" style="width:25.0%;"><p align="center"><img src="https://raw.githubusercontent.com/bchao1/poisson-image-editing/master/data/test5/result.png" alt="" width="100%"/></p></td>
+</tr>
+</tbody>
+</table><p><br></p>
+<h3>Local illumination change</h3>
+<p><br></p><table style="width:100%;margin:auto">
+<thead>
+<tr>
+<th align="left" style="width:33.333333333333336%;">Source</th>
+<th align="left" style="width:33.333333333333336%;">Mask</th>
+<th align="left" style="width:33.333333333333336%;">Modified</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" style="width:33.333333333333336%;"><p align="center"><img src="https://raw.githubusercontent.com/bchao1/poisson-image-editing/master/data/illum1/source.jpg" alt="" width="100%"/></p></td>
+<td align="left" style="width:33.333333333333336%;"><p align="center"><img src="https://raw.githubusercontent.com/bchao1/poisson-image-editing/master/data/illum1/mask.jpg" alt="" width="100%"/></p></td>
+<td align="left" style="width:33.333333333333336%;"><p align="center"><img src="https://raw.githubusercontent.com/bchao1/poisson-image-editing/master/data/illum1/result.png" alt="" width="100%"/></p></td>
+</tr>
+</tbody>
+</table><p><br></p>
+<h3>Local color change</h3>
+<p><br></p><table style="width:100%;margin:auto">
+<thead>
+<tr>
+<th align="left" style="width:25.0%;">Source</th>
+<th align="left" style="width:25.0%;">Green-ish</th>
+<th align="left" style="width:25.0%;">Blue-ish</th>
+<th align="left" style="width:25.0%;">Gray background</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" style="width:25.0%;"><img src="data/color1/source.jpg" width="200"/></td>
+<td align="left" style="width:25.0%;"><img src="data/color1/result_color_change_60.0.png" width="200"/></td>
+<td align="left" style="width:25.0%;"><img src="data/color1/result_color_change_120.0.png" width="200"/></td>
+<td align="left" style="width:25.0%;"><img src="data/color1/result_gray_background_0.png" width="200"/></td>
+</tr>
+</tbody>
+</table><p><br></p>
+<h2>Notes</h2>
+<ul>
+<li>Faster solvers: <code>spsolve</code>, <code>cgs</code>, <code>bicg</code></li>
+<li><code>minres</code> gives bad results.</li>
+<li>If you want to use conjugate gradient solvers, use <code>bicg</code>, <code>bicgstab</code> or <code>cgs</code>. Do not use <code>solver == &quot;cg&quot;</code> since the A matrix is not hermitian (or symmetric since A is real).</li>
+<li>Iterative least-squares solvers <code>lsqr</code>, <code>lsmr</code> tend to be much slower.</li>
+</ul>
