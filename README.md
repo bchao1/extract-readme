@@ -56,3 +56,6 @@ Generated HTML:
 |![](images/md_table.png)|![](images/html_table.png)|
 
 Note that this script only generates a bare-bones HTML. You can either customize it later by defining your own `style.css` file that complements the HTML, or the HTML with directly inherit the style of your website.
+
+## Todo
+- Additional size logic for `svg/xml` files. 
