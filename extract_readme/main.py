@@ -31,16 +31,22 @@ def get_readme_content(user_name, repo_name):
         exit()
     
     return readme_content
-    
+
+def get_new_src(src, user, repo, raw_data_root):
+    if src.startswith("http"):
+        return src
+    new_src = src.lstrip("./")
+    new_src = "/".join([raw_data_root, user, repo, "master", new_src])
+    return new_src
+
 def process_html(token, user, repo, raw_data_root):
     soup = BeautifulSoup(token.content, "html.parser")
     img_tags = soup.find_all("img")
     for i in range(len(img_tags)):
         src = img_tags[i]["src"]
-        new_src = src.lstrip("./")
-        new_src = "/".join([raw_data_root, user, repo, "master", new_src])
-        img_tags[i]["src"] = new_src
-        img_tags[i]["width"] = "100%"
+        img_tags[i]["src"] = get_new_src(src, user, repo, raw_data_root)
+        if img_tags[i]["width"] is None:
+            img_tags[i]["width"] = "50%"
     return soup.prettify()
 
 class READMERenderer(HTMLRenderer):
@@ -113,14 +119,13 @@ class READMERenderer(HTMLRenderer):
         if isinstance(token.parent, block_token.TableCell):
             width = "100%"
         else:
-            width = "80%"
+            width = "50%"
         template = '<p align="center"><img src="{}" alt="{}"{} width="{}"/></p>'
         if token.title:
             title = ' title="{}"'.format(html.escape(token.title))
         else:
             title = ''
-        new_src = token.src.lstrip("./")
-        new_src = "/".join([raw_data_root, self.user, self.repo, "master", new_src])
+        new_src = get_new_src(token.src, self.user, self.repo, raw_data_root)
         return template.format(new_src, self.render_to_plain(token), title, width)
     
 
