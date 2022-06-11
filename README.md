@@ -12,9 +12,9 @@ Sometimes you may want to mirror a README file of your project on your personal 
 This script takes care of these issues.
 ## Features
 - Parses, formats, and renders ...
-        - Images, video content
-        - Tables
-        - HTML embedded in markdown
+	- Images, video content
+    - Tables
+    - HTML embedded in markdown
 - Peforms regex matching for readme files (`README`, `readme.md`, `ReAdMe.md`, etc)
 - Dynamic scaling of image, video, and table content
 
