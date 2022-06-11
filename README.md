@@ -2,7 +2,7 @@
 `extract-readme` extracts the README markdown file from a GitHub repository and generates a corresponding formatted HTML that can be rendered on any website.
 
 ## What for?
-Sometimes you may want to mirror a README file of your project on your academic personal website. However, you might encounter serveral problems:
+Sometimes you may want to mirror a README file of your project on your personal website. However, you might encounter serveral problems:
 
 1. Your website does not support vanilla markdown.
 2. File paths in the README file are relative to the repository folder structure, and cannot be accessed from outside of the repository.
@@ -10,6 +10,13 @@ Sometimes you may want to mirror a README file of your project on your academic 
 4. ...
 
 This script takes care of these issues.
+## Features
+- Parses, formats, and renders ...
+        - Images, video content
+        - Tables
+        - HTML embedded in markdown
+- Peforms regex matching for readme files (`README`, `readme.md`, `ReAdMe.md`, etc)
+- Dynamic scaling of image, video, and table content
 
 ## Usage
 Install the package:
