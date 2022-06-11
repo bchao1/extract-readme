@@ -14,11 +14,22 @@ raw_data_root = "https://raw.githubusercontent.com"
 
 def get_readme_content(user_name, repo_name):
     g = Github()
-    repo = g.get_repo(f"{user_name}/{repo_name}")
+
+    try:
+        repo = g.get_repo(f"{user_name}/{repo_name}")
+    except Exception as e:
+        print(f"Repository \"{user_name}/{repo_name}\" not found!")
+        exit()
+    
     contents = repo.get_contents("")
+    readme_content = None
     for content in contents:
         if re.match("(?i)readme*", content.path) is not None:
             readme_content = requests.get(content.download_url).text # readme raw content
+    if readme_content is None:
+        print(f"Repository \"{user_name}/{repo_name}\" does not have a readme file!")
+        exit()
+    
     return readme_content
     
 def process_html(token, user, repo, raw_data_root):
@@ -47,9 +58,6 @@ class READMERenderer(HTMLRenderer):
         return self.render_map[token.__class__.__name__](token)
 
     def render_inner(self, token) -> str:
-        #print(type(token))
-        #if isinstance(token, block_token.TableRow):
-        #    print(token.__dict__)
         for i in range(len(token.children)):
             token.children[i].parent = token
         try:
@@ -57,8 +65,6 @@ class READMERenderer(HTMLRenderer):
                 token.header[i].parent = token
         except:
             pass
-            #if isinstance(token.children[i], block_token.TableRow):
-            #    print(token.children[i].__dict__)
         return ''.join(map(self.render, token.children))
 
     def render_html_span(self, token: span_token.HTMLSpan) -> str:
@@ -74,10 +80,7 @@ class READMERenderer(HTMLRenderer):
         return template.format(inner=inner)
 
     def render_table_cell(self, token: block_token.TableCell, is_header=False) -> str:
-        if is_header:
-            width = 100 / len(token.parent.children)
-        else:
-            width = 100 / len(token.parent.children)
+        width = 100 / len(token.parent.children)
         
         template = '<{tag}{attr} style="width:{width}%;">{inner}</{tag}>\n'
         tag = 'th' if is_header else 'td'
@@ -92,10 +95,6 @@ class READMERenderer(HTMLRenderer):
         return template.format(tag=tag, width=width, attr=attr, inner=inner)
 
     def render_table(self, token: block_token.Table) -> str:
-        # This is actually gross and I wonder if there's a better way to do it.
-        #
-        # The primary difficulty seems to be passing down alignment options to
-        # reach individual cells.
         template = '<p><br></p><table style="width:100%;margin:auto">\n{inner}</table><p><br></p>'
         if hasattr(token, 'header'):
             token.header.parent = token
