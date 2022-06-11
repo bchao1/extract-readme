@@ -1,6 +1,7 @@
 import re
 import html
 import requests
+import mimetypes
 import pyperclip
 from github import Github
 from bs4 import BeautifulSoup
@@ -47,6 +48,8 @@ def process_html(token, user, repo, raw_data_root):
         img_tags[i]["src"] = get_new_src(src, user, repo, raw_data_root)
         if img_tags[i]["width"] is None:
             img_tags[i]["width"] = "50%"
+        p = soup.new_tag("p", align="center")
+        img_tags[i].wrap(p)
     return soup.prettify()
 
 class READMERenderer(HTMLRenderer):
@@ -120,13 +123,19 @@ class READMERenderer(HTMLRenderer):
             width = "100%"
         else:
             width = "50%"
-        template = '<p align="center"><img src="{}" alt="{}"{} width="{}"/></p>'
         if token.title:
             title = ' title="{}"'.format(html.escape(token.title))
         else:
             title = ''
         new_src = get_new_src(token.src, self.user, self.repo, raw_data_root)
-        return template.format(new_src, self.render_to_plain(token), title, width)
+        
+        media_type = mimetypes.guess_type(new_src)[0]
+        if media_type.startswith("video"):
+            template = '<p align="center"><video width={} controls><source src={} type={}></source></video></p>'
+            return template.format(width, new_src, media_type)
+        else:
+            template = '<p align="center"><img src="{}" alt="{}"{} width="{}"/></p>'
+            return template.format(new_src, self.render_to_plain(token), title, width)
     
 
 def main():
